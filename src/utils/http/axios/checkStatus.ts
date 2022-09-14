@@ -31,7 +31,7 @@ export function checkStatus(
       userStore.setToken(undefined);
       errMessage = msg || t('sys.api.errMsg401');
       if (stp === SessionTimeoutProcessingEnum.PAGE_COVERAGE) {
-        userStore.setSessionTimeout(true);
+        userStore.setSessionTimeout(true); // 点击某个接口使
       } else {
         userStore.logout(true);
       }

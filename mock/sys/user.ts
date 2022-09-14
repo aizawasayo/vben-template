@@ -74,8 +74,10 @@ export default [
     response: (request: requestParams) => {
       const token = getRequestToken(request);
       if (!token) return resultError('Invalid token');
+      // 实际逻辑会有一个验证 token 的中间件，这边可以得到 token 是否失效的信息
       const checkUser = createFakeUserList().find((item) => item.token === token);
       if (!checkUser) {
+        // 未获得相应的用户信息
         return resultError('The corresponding user information was not obtained!');
       }
       return resultSuccess(checkUser);
