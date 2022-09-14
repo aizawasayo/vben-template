@@ -40,7 +40,6 @@
   import { Dropdown } from '/@/components/Dropdown';
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useTableContext } from '../hooks/useTableContext';
-  import { usePermission } from '/@/hooks/web/usePermission';
   import { isBoolean, isFunction, isString } from '/@/utils/is';
   import { propTypes } from '/@/utils/propTypes';
   import { ACTION_COLUMN_FLAG } from '../const';
@@ -68,7 +67,6 @@
         table = useTableContext();
       }
 
-      const { hasPermission } = usePermission();
       function isIfShow(action: ActionItem): boolean {
         const ifShow = action.ifShow;
 
@@ -86,7 +84,7 @@
       const getActions = computed(() => {
         return (toRaw(props.actions) || [])
           .filter((action) => {
-            return hasPermission(action.auth) && isIfShow(action);
+            return isIfShow(action);
           })
           .map((action) => {
             const { popConfirm } = action;
@@ -106,7 +104,7 @@
       const getDropdownList = computed((): any[] => {
         return (toRaw(props.dropDownActions) || [])
           .filter((action) => {
-            return hasPermission(action.auth) && isIfShow(action);
+            return isIfShow(action);
           })
           .map((action, index) => {
             const { label, popConfirm } = action;

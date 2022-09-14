@@ -16,6 +16,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "experimentalDecorators": true,
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
     "lib": ["dom", "esnext"],
     "types": ["vite/client", "jest"],
     "typeRoots": ["./node_modules/@types/", "./types"],

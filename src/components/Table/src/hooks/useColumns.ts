@@ -3,7 +3,6 @@ import type { PaginationProps } from '../types/pagination';
 import type { ComputedRef } from 'vue';
 import { computed, Ref, ref, toRaw, unref, watch } from 'vue';
 import { renderEditCell } from '../components/editable';
-import { usePermission } from '/@/hooks/web/usePermission';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { isArray, isBoolean, isFunction, isMap, isString } from '/@/utils/is';
 import { cloneDeep, isEqual } from 'lodash-es';
@@ -141,7 +140,6 @@ export function useColumns(
     }
     return isIfShow;
   }
-  const { hasPermission } = usePermission();
 
   const getViewColumns = computed(() => {
     const viewColumns = sortFixedColumn(unref(getColumnsRef));
@@ -149,7 +147,7 @@ export function useColumns(
     const columns = cloneDeep(viewColumns);
     return columns
       .filter((column) => {
-        return hasPermission(column.auth) && isIfShow(column);
+        return isIfShow(column);
       })
       .map((column) => {
         const { slots, dataIndex, customRender, format, edit, editRow, flag } = column;

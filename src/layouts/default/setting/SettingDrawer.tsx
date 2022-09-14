@@ -17,7 +17,6 @@ import { MenuTypeEnum, TriggerEnum } from '/@/enums/menuEnum';
 import { useRootSetting } from '/@/hooks/setting/useRootSetting';
 import { useMenuSetting } from '/@/hooks/setting/useMenuSetting';
 import { useHeaderSetting } from '/@/hooks/setting/useHeaderSetting';
-import { useMultipleTabSetting } from '/@/hooks/setting/useMultipleTabSetting';
 import { useTransitionSetting } from '/@/hooks/setting/useTransitionSetting';
 import { useI18n } from '/@/hooks/web/useI18n';
 
@@ -88,8 +87,6 @@ export default defineComponent({
       getHeaderBgColor,
       getShowSearch,
     } = useHeaderSetting();
-
-    const { getShowMultipleTab, getShowQuick, getShowRedo, getShowFold } = useMultipleTabSetting();
 
     const getShowMenuRef = computed(() => {
       return unref(getShowMenu) && !unref(getIsHorizontal);
@@ -296,32 +293,6 @@ export default defineComponent({
           />
 
           <SwitchItem
-            title={t('layout.setting.tabs')}
-            event={HandlerEnum.TABS_SHOW}
-            def={unref(getShowMultipleTab)}
-          />
-
-          <SwitchItem
-            title={t('layout.setting.tabsRedoBtn')}
-            event={HandlerEnum.TABS_SHOW_REDO}
-            def={unref(getShowRedo)}
-            disabled={!unref(getShowMultipleTab)}
-          />
-
-          <SwitchItem
-            title={t('layout.setting.tabsQuickBtn')}
-            event={HandlerEnum.TABS_SHOW_QUICK}
-            def={unref(getShowQuick)}
-            disabled={!unref(getShowMultipleTab)}
-          />
-          <SwitchItem
-            title={t('layout.setting.tabsFoldBtn')}
-            event={HandlerEnum.TABS_SHOW_FOLD}
-            def={unref(getShowFold)}
-            disabled={!unref(getShowMultipleTab)}
-          />
-
-          <SwitchItem
             title={t('layout.setting.sidebar')}
             event={HandlerEnum.MENU_SHOW_SIDEBAR}
             def={unref(getShowMenu)}
@@ -401,7 +372,7 @@ export default defineComponent({
         {...attrs}
         title={t('layout.setting.drawerTitle')}
         width={330}
-        wrapClassName="setting-drawer"
+        class="setting-drawer"
       >
         {unref(getShowDarkModeToggle) && <Divider>{() => t('layout.setting.darkMode')}</Divider>}
         {unref(getShowDarkModeToggle) && <AppDarkModeToggle class="mx-auto" />}

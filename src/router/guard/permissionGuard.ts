@@ -7,55 +7,43 @@ import { useUserStoreWithOut } from '/@/store/modules/user';
 
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 
-import { RootRoute } from '/@/router/routes';
-
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
-
-const ROOT_PATH = RootRoute.path;
-
-const whitePathList: PageEnum[] = [LOGIN_PATH];
 
 export function createPermissionGuard(router: Router) {
   const userStore = useUserStoreWithOut();
   const permissionStore = usePermissionStoreWithOut();
-  router.beforeEach(async (to, from, next) => {
-    if (
-      from.path === ROOT_PATH &&
-      to.path === PageEnum.BASE_HOME &&
-      userStore.getUserInfo.homePath &&
-      userStore.getUserInfo.homePath !== PageEnum.BASE_HOME
-    ) {
-      next(userStore.getUserInfo.homePath);
-      return;
-    }
-
+  router.beforeEach(async (to, from) => {
     const token = userStore.getToken;
 
-    // Whitelist can be directly entered
-    if (whitePathList.includes(to.path as PageEnum)) {
-      if (to.path === LOGIN_PATH && token) {
-        const isSessionTimeout = userStore.getSessionTimeout;
-        try {
-          await userStore.afterLoginAction();
-          if (!isSessionTimeout) {
-            next((to.query?.redirect as string) || '/');
-            return;
-          }
-        } catch {}
-      }
-      next();
-      return;
+    /*
+    - 是否已登录且未超时
+    */
+    // 如果 token 已存在并且要去登陆页
+    // 则 check 登录有无超时
+    if (token && to.path === LOGIN_PATH) {
+      const isSessionTimeout = userStore.getSessionTimeout;
+      try {
+        await userStore.afterLoginAction();
+        if (!isSessionTimeout) {
+          // 未超时即去往之前的页面或者首页
+          return (to.query?.redirect as string) || '/';
+        }
+        // 超时就放行去登录页
+        return true;
+      } catch {}
     }
 
     // token does not exist
     if (!token) {
-      // You can access without permission. You need to set the routing meta.ignoreAuth to true
-      if (to.meta.ignoreAuth) {
-        next();
-        return;
+      // You can access without permission. except the routing meta.requireAuth is true
+      // 没有设置 meta.requireAuth = true 的路由直接放行
+      if (!to.meta.requireAuth) {
+        return true;
       }
 
       // redirect login page
+      // 如果是需要登录才能访问的路由
+      // 添加询问是否去登录页的 confirm 框，用户确认则去登录，否则 return false
       const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
         path: LOGIN_PATH,
         replace: true,
@@ -66,8 +54,7 @@ export function createPermissionGuard(router: Router) {
           redirect: to.path,
         };
       }
-      next(redirectData);
-      return;
+      return redirectData;
     }
 
     // Jump to the 404 page after processing the login
@@ -76,8 +63,7 @@ export function createPermissionGuard(router: Router) {
       to.name === PAGE_NOT_FOUND_ROUTE.name &&
       to.fullPath !== (userStore.getUserInfo.homePath || PageEnum.BASE_HOME)
     ) {
-      next(userStore.getUserInfo.homePath || PageEnum.BASE_HOME);
-      return;
+      return PageEnum.BASE_HOME;
     }
 
     // get userinfo while last fetch time is empty
@@ -85,14 +71,12 @@ export function createPermissionGuard(router: Router) {
       try {
         await userStore.getUserInfoAction();
       } catch (err) {
-        next();
-        return;
+        return true;
       }
     }
 
     if (permissionStore.getIsDynamicAddedRoute) {
-      next();
-      return;
+      return true;
     }
 
     const routes = await permissionStore.buildRoutesAction();
@@ -106,13 +90,13 @@ export function createPermissionGuard(router: Router) {
     permissionStore.setDynamicAddedRoute(true);
 
     if (to.name === PAGE_NOT_FOUND_ROUTE.name) {
-      // 动态添加路由后，此处应当重定向到fullPath，否则会加载404页面内容
-      next({ path: to.fullPath, replace: true, query: to.query });
+      // 动态添加路由后，此处应当重定向到 fullPath，否则会加载404页面内容
+      return { path: to.fullPath, replace: true, query: to.query };
     } else {
       const redirectPath = (from.query.redirect || to.path) as string;
       const redirect = decodeURIComponent(redirectPath);
       const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
-      next(nextData);
+      return nextData;
     }
   });
 }

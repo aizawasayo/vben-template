@@ -7,6 +7,31 @@ import {
   PAGE_NOT_FOUND_NAME,
 } from '/@/router/constant';
 
+export const About: AppRouteRecordRaw = {
+  path: '/about',
+  name: 'About',
+  component: LAYOUT,
+  redirect: '/about/index',
+  meta: {
+    hideChildrenInMenu: true,
+    icon: 'simple-icons:about-dot-me',
+    title: t('routes.dashboard.about'),
+    orderNo: 100000,
+  },
+  children: [
+    {
+      path: 'index',
+      name: 'AboutPage',
+      component: () => import('/@/views/sys/about/index.vue'),
+      meta: {
+        title: t('routes.dashboard.about'),
+        icon: 'simple-icons:about-dot-me',
+        hideMenu: true,
+      },
+    },
+  ],
+};
+
 // 404 on a page
 export const PAGE_NOT_FOUND_ROUTE: AppRouteRecordRaw = {
   path: '/:path(.*)*',

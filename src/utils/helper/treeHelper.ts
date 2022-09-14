@@ -125,8 +125,8 @@ export function filter<T = any>(
   func: (n: T) => boolean,
   config: Partial<TreeHelperConfig> = {},
 ): T[] {
-  config = getConfig(config);
-  const children = config.children as string;
+  config = getConfig(config); // { id: 'id', children: 'children', pid: 'pid', }
+  const children = config.children as string; // 'children'
   function listFilter(list: T[]) {
     return list
       .map((node: any) => ({ ...node }))
@@ -135,6 +135,7 @@ export function filter<T = any>(
         return func(node) || (node[children] && node[children].length);
       });
   }
+  // 进行数组过滤
   return listFilter(tree);
 }
 

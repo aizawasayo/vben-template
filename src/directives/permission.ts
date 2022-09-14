@@ -5,16 +5,12 @@
  */
 import type { App, Directive, DirectiveBinding } from 'vue';
 
-import { usePermission } from '/@/hooks/web/usePermission';
-
 function isAuth(el: Element, binding: any) {
-  const { hasPermission } = usePermission();
-
   const value = binding.value;
   if (!value) return;
-  if (!hasPermission(value)) {
-    el.parentNode?.removeChild(el);
-  }
+  // if (!hasPermission(value)) {
+  //   el.parentNode?.removeChild(el);
+  // }
 }
 
 const mounted = (el: Element, binding: DirectiveBinding<any>) => {

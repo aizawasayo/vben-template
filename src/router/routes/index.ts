@@ -1,12 +1,12 @@
 import type { AppRouteRecordRaw, AppRouteModule } from '/@/router/types';
 
-import { PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE } from '/@/router/routes/basic';
+import { PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE, About } from '/@/router/routes/basic';
 
 import { mainOutRoutes } from './mainOut';
 import { PageEnum } from '/@/enums/pageEnum';
 import { t } from '/@/hooks/web/useI18n';
 
-const modules = import.meta.globEager('./modules/**/*.ts');
+const modules: moduleType = import.meta.globEager('./modules/**/*.ts');
 
 const routeModuleList: AppRouteModule[] = [];
 
@@ -43,4 +43,5 @@ export const basicRoutes = [
   ...mainOutRoutes,
   REDIRECT_ROUTE,
   PAGE_NOT_FOUND_ROUTE,
+  About,
 ];

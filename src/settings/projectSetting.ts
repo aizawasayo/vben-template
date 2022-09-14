@@ -82,7 +82,7 @@ const setting: ProjectConfig = {
     //  Whether to fix the left menu
     fixed: true,
     // Menu collapse
-    collapsed: false,
+    collapsed: true,
     // Whether to display the menu name when folding the menu
     collapsedShowTitle: false,
     // Whether it can be dragged
@@ -95,15 +95,15 @@ const setting: ProjectConfig = {
     // Menu width
     menuWidth: 210,
     // Menu mode
-    mode: MenuModeEnum.INLINE,
+    mode: MenuModeEnum.HORIZONTAL,
     // Menu type
-    type: MenuTypeEnum.SIDEBAR,
+    type: MenuTypeEnum.TOP_MENU,
     // Menu theme
     theme: ThemeEnum.DARK,
     // Split menu
     split: false,
     // Top menu layout
-    topMenuAlign: 'center',
+    topMenuAlign: 'start',
     // Fold trigger position
     trigger: TriggerEnum.HEADER,
     // Turn on accordion mode, only show a menu

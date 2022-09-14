@@ -19,14 +19,6 @@ export default {
 
     home: 'Home',
   },
-  multipleTab: {
-    reload: 'Refresh current',
-    close: 'Close current',
-    closeLeft: 'Close Left',
-    closeRight: 'Close Right',
-    closeOther: 'Close Other',
-    closeAll: 'Close All',
-  },
   setting: {
     // content mode
     contentModeFull: 'Full',

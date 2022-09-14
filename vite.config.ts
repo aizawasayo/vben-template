@@ -54,7 +54,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     },
     server: {
       // Listening on all local IPs
-      host: true,
+      host: true, // 监听所有地址，包括局域网和公网地址
       port: VITE_PORT,
       // Load proxy configuration from .env
       proxy: createProxy(VITE_PROXY),
@@ -62,15 +62,17 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     build: {
       target: 'es2015',
       outDir: OUTPUT_DIR,
-      terserOptions: {
-        compress: {
-          keep_infinity: true,
-          // Used to delete console in production environment
-          drop_console: VITE_DROP_CONSOLE,
-        },
-      },
+      minify: 'esbuild',
+      // terserOptions: {
+      //   compress: {
+      //     keep_infinity: true,
+      //     // Used to delete console in production environment
+      //     drop_console: VITE_DROP_CONSOLE,
+      //   },
+      // },
+      // commonjsOptions: { include: [] }, // 如果o 配置了 ptimizeDeps.disabled: false，在此处移除 @rollup/plugin-commonjs 功能
       // Turning off brotliSize display can slightly reduce packaging time
-      brotliSize: false,
+      reportCompressedSize: false,
       chunkSizeWarningLimit: 2000,
     },
     define: {
@@ -83,16 +85,23 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     css: {
       preprocessorOptions: {
         less: {
-          modifyVars: generateModifyVars(),
+          modifyVars: generateModifyVars(), // 自定义主题色
           javascriptEnabled: true,
         },
       },
     },
+    // 如果不是在 React 或 Vue 中使用 JSX，自定义的 jsxFactory 和 jsxFragment 可以使用 esbuild 选项 进行配置。
+    // 例如对 Preact：
+    // esbuild: {
+    //   jsxFactory: 'h',
+    //   jsxFragment: 'Fragment',
+    // },
 
     // The vite plugin used by the project. The quantity is large, so it is separately extracted and managed
     plugins: createVitePlugins(viteEnv, isBuild),
-
     optimizeDeps: {
+      // 默认disabled: 'build'，即开发环境才使用 esbuild，生产环境使用 rollup，用 @rollpjs/plugin-commonjs 来处理 cjs 的依赖
+      // disabled: false, 将 esbulid 预构建同时用于开发环境和生产环境
       // @iconify/iconify: The dependency is dynamically and virtually loaded by @purge-icons/generated, so it needs to be specified explicitly
       include: [
         '@iconify/iconify',

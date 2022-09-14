@@ -1,27 +1,24 @@
 <template>
-  <Layout :class="prefixCls" v-bind="lockEvents">
+  <a-layout :class="prefixCls" v-bind="lockEvents">
     <LayoutFeatures />
-    <LayoutHeader fixed v-if="getShowFullHeaderRef" />
-    <Layout :class="[layoutClass]">
-      <LayoutSideBar v-if="getShowSidebar || getIsMobile" />
-      <Layout :class="`${prefixCls}-main`">
-        <LayoutMultipleHeader />
+    <LayoutHeader fixed />
+    <a-layout :class="[layoutClass]">
+      <LayoutSideBar v-if="getIsMobile" />
+      <a-layout :class="`${prefixCls}-main`">
         <LayoutContent />
         <LayoutFooter />
-      </Layout>
-    </Layout>
-  </Layout>
+      </a-layout>
+    </a-layout>
+  </a-layout>
 </template>
 
 <script lang="ts">
   import { defineComponent, computed, unref } from 'vue';
-  import { Layout } from 'ant-design-vue';
   import { createAsyncComponent } from '/@/utils/factory/createAsyncComponent';
 
   import LayoutHeader from './header/index.vue';
   import LayoutContent from './content/index.vue';
   import LayoutSideBar from './sider/index.vue';
-  import LayoutMultipleHeader from './header/MultipleHeader.vue';
 
   import { useHeaderSetting } from '/@/hooks/setting/useHeaderSetting';
   import { useMenuSetting } from '/@/hooks/setting/useMenuSetting';
@@ -38,8 +35,6 @@
       LayoutHeader,
       LayoutContent,
       LayoutSideBar,
-      LayoutMultipleHeader,
-      Layout,
     },
     setup() {
       const { prefixCls } = useDesign('default-layout');

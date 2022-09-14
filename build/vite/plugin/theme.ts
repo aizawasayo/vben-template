@@ -20,7 +20,7 @@ export function configThemePlugin(isBuild: boolean): Plugin[] {
     mixLighten,
     tinycolor,
   });
-  const plugin = [
+  return [
     viteThemePlugin({
       resolveSelector: (s) => {
         s = s.trim();
@@ -83,7 +83,5 @@ export function configThemePlugin(isBuild: boolean): Plugin[] {
         'alert-error-icon-color': '#a61d24',
       },
     }),
-  ];
-
-  return plugin as unknown as Plugin[];
+  ] as unknown as Plugin[];
 }

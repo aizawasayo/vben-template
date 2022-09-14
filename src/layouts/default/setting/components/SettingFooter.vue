@@ -23,7 +23,6 @@
 
   import { useAppStore } from '/@/store/modules/app';
   import { usePermissionStore } from '/@/store/modules/permission';
-  import { useMultipleTabStore } from '/@/store/modules/multipleTab';
   import { useUserStore } from '/@/store/modules/user';
 
   import { useDesign } from '/@/hooks/web/useDesign';
@@ -43,7 +42,6 @@
       const { prefixCls } = useDesign('setting-footer');
       const { t } = useI18n();
       const { createSuccessModal, createMessage } = useMessage();
-      const tabStore = useMultipleTabStore();
       const userStore = useUserStore();
       const appStore = useAppStore();
 
@@ -74,7 +72,6 @@
         localStorage.clear();
         appStore.resetAllState();
         permissionStore.resetState();
-        tabStore.resetState();
         userStore.resetState();
         location.reload();
       }

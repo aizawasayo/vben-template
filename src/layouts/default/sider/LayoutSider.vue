@@ -1,9 +1,4 @@
 <template>
-  <div
-    v-if="getMenuFixed && !getIsMobile"
-    :style="getHiddenDomStyle"
-    v-show="showClassSideBarRef"
-  ></div>
   <Sider
     v-show="showClassSideBarRef"
     ref="sideRef"
@@ -14,7 +9,6 @@
     :collapsed="getCollapsed"
     :collapsedWidth="getCollapsedWidth"
     :theme="getMenuTheme"
-    @breakpoint="onBreakpointChange"
     :trigger="getTrigger"
     v-bind="getTriggerAttr"
   >

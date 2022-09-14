@@ -5,6 +5,9 @@ import legacy from '@vitejs/plugin-legacy';
 import purgeIcons from 'vite-plugin-purge-icons';
 import windiCSS from 'vite-plugin-windicss';
 import vueSetupExtend from 'vite-plugin-vue-setup-extend';
+import Components from 'unplugin-vue-components/vite';
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
+
 import { configHtmlPlugin } from './html';
 import { configPwaConfig } from './pwa';
 import { configMockPlugin } from './mock';
@@ -30,6 +33,9 @@ export function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean) {
     vue(),
     // have to
     vueJsx(),
+    Components({
+      resolvers: [AntDesignVueResolver({ importStyle: 'less' })], //
+    }),
     // support name
     vueSetupExtend(),
   ];

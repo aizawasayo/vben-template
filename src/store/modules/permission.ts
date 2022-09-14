@@ -5,10 +5,16 @@ import { store } from '/@/store';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { useUserStore } from './user';
 import { useAppStoreWithOut } from './app';
-import { toRaw } from 'vue';
+// import { toRaw } from 'vue';
 import { transformObjToRoute, flatMultiLevelRoutes } from '/@/router/helper/routeHelper';
 import { transformRouteToMenu } from '/@/router/helper/menuHelper';
+// ref/reactive数据类型的特点:
+// 每次修改都会被追踪, 都会更新UI界面, 但是这样其实是非常消耗 性能的
+// 所以如果我们有一些操作不需要追踪, 不需要更新UI界面, 那么这个时候,
+// 我们就可以通过toRaw方法拿到它的原始数据, 对原始数据进行修改
+// 这样就不会被追踪, 这样就不会更新UI界面, 这样性能就好了
 
+// ref本质: reactive   ref(obj) -> reactive({value: obj})
 import projectSetting from '/@/settings/projectSetting';
 
 import { PermissionModeEnum } from '/@/enums/appEnum';
@@ -102,14 +108,14 @@ export const usePermissionStore = defineStore({
       const appStore = useAppStoreWithOut();
 
       let routes: AppRouteRecordRaw[] = [];
-      const roleList = toRaw(userStore.getRoleList) || [];
       const { permissionMode = projectSetting.permissionMode } = appStore.getProjectConfig;
 
       const routeFilter = (route: AppRouteRecordRaw) => {
-        const { meta } = route;
-        const { roles } = meta || {};
-        if (!roles) return true;
-        return roleList.some((role) => roles.includes(role));
+        // const { meta } = route;
+        // const { roles } = meta || {};
+        // if (!roles) return true;
+        // return roleList.some((role) => roles.includes(role));
+        return true;
       };
 
       const routeRemoveIgnoreFilter = (route: AppRouteRecordRaw) => {
@@ -149,14 +155,14 @@ export const usePermissionStore = defineStore({
       };
 
       switch (permissionMode) {
-        case PermissionModeEnum.ROLE:
+        case PermissionModeEnum.ROLE: // 菜单和路由分开配置
           routes = filter(asyncRoutes, routeFilter);
           routes = routes.filter(routeFilter);
           // Convert multi-level routing to level 2 routing
           routes = flatMultiLevelRoutes(routes);
           break;
 
-        case PermissionModeEnum.ROUTE_MAPPING:
+        case PermissionModeEnum.ROUTE_MAPPING: // 菜单由路由配置自动生成
           routes = filter(asyncRoutes, routeFilter);
           routes = routes.filter(routeFilter);
           const menuList = transformRouteToMenu(routes, true);
@@ -166,6 +172,7 @@ export const usePermissionStore = defineStore({
             return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
           });
 
+          console.log(menuList);
           this.setFrontMenuList(menuList);
           // Convert multi-level routing to level 2 routing
           routes = flatMultiLevelRoutes(routes);
